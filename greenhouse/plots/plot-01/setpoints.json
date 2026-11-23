@@ -1,6 +1,6 @@
 {
   "plot": "plot-01",
-  "plant_type": "tomato",
+  "plant_type": "tomaat",
   "plc_ip": "192.168.6.10",
   "scada_ip": "192.168.6.20",
   "setpoints": {

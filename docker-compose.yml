@@ -63,6 +63,8 @@ services:
       - "1881:1881"
     dns:
       - 127.0.0.11
+    volumes:
+      - ./greenhouse/scada/appdata:/usr/src/app/FUXA/server/_appdata
 
   collector:
     image: zakharbz/labshock-collector:v2.0.1

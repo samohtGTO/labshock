@@ -1,6 +1,6 @@
 {
   "plot": "plot-02",
-  "plant_type": "lettuce",
+  "plant_type": "sla",
   "plc_ip": "192.168.6.11",
   "scada_ip": "192.168.6.20",
   "setpoints": {

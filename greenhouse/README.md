@@ -35,14 +35,35 @@ Open daarna:
 - PLC plot 2: https://localhost:8081
 - Collector: https://localhost:2443
 
-## SCADA koppelen
+## SCADA (FUXA)
 
-In de SCADA (FUXA) twee apparaten toevoegen:
+Het SCADA-dashboard is automatisch gevuld: `greenhouse/scada/generate.py` leest alle `plots/*/setpoints.json` en bouwt `greenhouse/scada/appdata/project.fuxap.db` met:
 
-- Plot 1 PLC: Modbus TCP / webapi naar `192.168.6.10`
-- Plot 2 PLC: Modbus TCP / webapi naar `192.168.6.11`
+- startview "Kas Overzicht" met per plot temperatuur, vocht en water-events
+- per plot een eigen view met schakelaars (lampen/warmte/water), actuele waardes en de setpoints
+- een ModbusTCP-device per plot (al voorgeconfigureerd op plc_ip:502)
 
-Tags per PLC: `lampen` (on/off + niveau), `warmte` (temperatuur setpoint/actueel), `water` (vocht + gietbeurten).
+Na het aanpassen van setpoints opnieuw genereren en de container herstarten:
+
+```bash
+python3 greenhouse/scada/generate.py
+docker compose restart scada
+```
+
+### Modbus tag-map per plot-PLC
+
+| Functie | Type | Register | Tag | Factor |
+|---|---|---|---|---|
+| Lampen aan/uit | coil (schrijfbaar) | 000001 | `lamps_on` | - |
+| Warmte aan/uit | coil (schrijfbaar) | 000002 | `heat_on` | - |
+| Water aan/uit | coil (schrijfbaar) | 000003 | `water_on` | - |
+| Temperatuur | input register | 300001 | `temp_c` | /10 |
+| Bodemvocht % | input register | 300002 | `soil_moisture_pct` | - |
+| Gietbeurten | input register | 300003 | `water_events` | - |
+| Temp setpoint | holding register | 400001 | `temp_setpoint` | /10 |
+| Vocht setpoint | holding register | 400002 | `moisture_setpoint` | - |
+
+Programmeer de OpenPLC-programma's van elke plot met deze tag-map, dan werkt de SCADA zonder verdere configuratie.
 
 ## Koppelen aan Wazuh (externe repo)
 
@@ -57,6 +78,17 @@ docker compose restart collector
 ```
 
 Bronnen die de collector monitort staan in `greenhouse/collector/sources.json` (beide PLC's + SCADA).
+
+## Nieuwe plot toevoegen
+
+Eén commando voegt een plot volledig toe (setpoints-bestand, PLC-service in docker-compose, collector-bron en SCADA-device + view):
+
+```bash
+python3 greenhouse/add_plot.py plot-03 peper
+docker compose up -d
+```
+
+De nieuwe plot krijgt automatisch het volgende vrije IP (192.168.6.12, .13, ...) en een unieke host-poort (8082, 8083, ...). Pas daarna de setpoints in `greenhouse/plots/plot-03/setpoints.json` aan naar de gewenste plant en regenereer desgewenst de SCADA.
 
 ## Testaanpak
 
