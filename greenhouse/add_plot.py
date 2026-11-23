@@ -57,9 +57,12 @@ def main():
         json.dump(setpoints, f, indent=2)
         f.write("\n")
 
-    program = open(os.path.join(ROOT, "scada", "program.template.st")).read()
+    program_id = re.sub(r"[^a-zA-Z0-9_]", "", f"{plant}_{plot_id}")
+    template_path = os.path.join(ROOT, "scada", "program.template.st")
+    program = open(template_path).read()
+    program = re.sub(r"PROGRAM\s+\S+", f"PROGRAM {program_id}", program, count=1)
     with open(os.path.join(plot_dir, "program.st"), "w") as f:
-        f.write(program.replace("__PLOT__", plot_id).replace("__PLANT__", plant))
+        f.write(program)
 
     with open(SOURCES) as f:
         sources = json.load(f)
