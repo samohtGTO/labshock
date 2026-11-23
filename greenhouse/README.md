@@ -63,7 +63,25 @@ docker compose restart scada
 | Temp setpoint | holding register | 400001 | `temp_setpoint` | /10 |
 | Vocht setpoint | holding register | 400002 | `moisture_setpoint` | - |
 
-Programmeer de OpenPLC-programma's van elke plot met deze tag-map, dan werkt de SCADA zonder verdere configuratie.
+Kant-en-klare OpenPLC-programma's liggen per plot klaar (`plots/plot-01/program.st`, `plots/plot-02/program.st`) en simuleren de actuators conform deze tag-map.
+
+## PLC activeren (Modbus op 502)
+
+Krijgt de SCADA `ECONNREFUSED <plc-ip>:502`? Dan stuurt de PLC-runtime nog geen Modbus, meestal omdat er nog geen programma draait. Loop dit af:
+
+1. Upload het programma in de PLC web UI (plot 1: `http://localhost:8080`, plot 2: `http://localhost:8081`, login `openplc` / `openplc`):
+   - Slot 0 -> `Upload Program` -> kies `greenhouse/plots/plot-01/program.st`
+   - `Compile program`, daarna `Start PLC`
+   - idem voor plot 2 met `plot-02/program.st`
+2. In trial-modus start Labshock vertraagd (5 min initialisatietijd) - wacht en controleer `docker compose logs plc-plot-01`.
+3. Test of Modbus open staat (vanaf de host, na `docker compose up`):
+
+```bash
+nc -zv 192.168.6.10 502
+nc -zv 192.168.6.11 502
+```
+
+Zodra dit `succeeded` toont, verdwijnen de SCADA-verbindingsfouten en komen de waardes levend in het dashboard.
 
 ## Koppelen aan Wazuh (externe repo)
 

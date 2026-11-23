@@ -57,6 +57,10 @@ def main():
         json.dump(setpoints, f, indent=2)
         f.write("\n")
 
+    program = open(os.path.join(ROOT, "scada", "program.template.st")).read()
+    with open(os.path.join(plot_dir, "program.st"), "w") as f:
+        f.write(program.replace("__PLOT__", plot_id).replace("__PLANT__", plant))
+
     with open(SOURCES) as f:
         sources = json.load(f)
     name = f'{plot_id.replace("-", "").title()}-PLC-{plant.title()}'
@@ -95,8 +99,9 @@ def main():
 
     print(f"Plot toegevoegd: {plot_id} ({plant}) op {ip}, SCADA: http://localhost:{host_port}")
     print("Volgende stappen:")
-    print(f"  - programmeer de PLC op http://localhost:{host_port} met de tag-map uit greenhouse/README.md")
-    print("  - docker compose up -d")
+    print(f"  - docker compose up -d")
+    print(f"  - upload en start greenhouse/plots/{plot_id}/program.st in de PLC web UI: http://localhost:{host_port}")
+    print("  - de SCADA-device en -view voor deze plot zijn al gegenereerd")
 
 
 if __name__ == "__main__":
