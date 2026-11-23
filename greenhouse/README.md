@@ -29,6 +29,7 @@ docker compose up -d
 
 Open daarna:
 
+- Portal: https://localhost:8443
 - SCADA: https://localhost:1881
 - PLC plot 1: https://localhost:8080
 - PLC plot 2: https://localhost:8081
