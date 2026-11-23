@@ -10,7 +10,7 @@ OT-omgeving voor de kas-scenario binnen Labshock: één kas met twee plotten, el
 | PLC plot 2 (sla) | `plc-plot-02` | 192.168.6.11 | 8081 | lampen, warmte, water |
 | SCADA | `scada` | 192.168.6.20 | 1881 | overzicht van beide plotten |
 | Collector | `collector` | 192.168.6.40 | 2443 | syslog verzamelen + doorsturen |
-| Portal | `portal` | - | 443 | Labshock portal/beheer |
+| Portal | `portal` | - | 8443 | Labshock portal/beheer |
 
 Netwerk: `ot_network` (192.168.6.0/24).
 
