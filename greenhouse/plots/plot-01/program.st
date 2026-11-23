@@ -11,6 +11,9 @@ PROGRAM tomato_plot_01
     events_raw AT %IW2 : INT;
     temp_sp_raw AT %QW0 : INT;
     moisture_sp_raw AT %QW1 : INT;
+  END_VAR
+
+  VAR
     temp_sim : REAL := 18.0;
     moist_sim : REAL := 70.0;
     cycles : INT := 0;
