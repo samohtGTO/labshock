@@ -1,0 +1,30 @@
+{
+  "plot": "plot-01",
+  "plant_type": "tomato",
+  "plc_ip": "192.168.6.10",
+  "scada_ip": "192.168.6.20",
+  "setpoints": {
+    "light": {
+      "photoperiod_hours": 16,
+      "dark_hours": 8,
+      "dli_target_mol_m2_day": 22,
+      "lamp_on_level_pct": 100
+    },
+    "heat": {
+      "day_temp_c": 21.0,
+      "night_temp_c": 18.0,
+      "max_temp_c": 28.0,
+      "min_temp_c": 15.0
+    },
+    "water": {
+      "soil_moisture_pct_min": 60,
+      "soil_moisture_pct_target": 65,
+      "watering_times_per_day": 3,
+      "drain_ec_ms_cm": 3.5
+    }
+  },
+  "logging": {
+    "syslog_host": "192.168.6.40",
+    "syslog_port": 514
+  }
+}

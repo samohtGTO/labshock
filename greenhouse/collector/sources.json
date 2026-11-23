@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Plot01-PLC-Tomato",
+    "type": "plc",
+    "ip": "192.168.6.10",
+    "protocol": "syslog",
+    "impact": "high",
+    "zone": "L2",
+    "state": "on"
+  },
+  {
+    "name": "Plot02-PLC-Lettuce",
+    "type": "plc",
+    "ip": "192.168.6.11",
+    "protocol": "syslog",
+    "impact": "high",
+    "zone": "L2",
+    "state": "on"
+  },
+  {
+    "name": "Kas-SCADA",
+    "type": "server",
+    "ip": "192.168.6.20",
+    "protocol": "syslog",
+    "impact": "high",
+    "zone": "L3",
+    "state": "on"
+  }
+]

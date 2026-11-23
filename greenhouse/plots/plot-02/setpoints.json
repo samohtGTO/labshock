@@ -1,0 +1,30 @@
+{
+  "plot": "plot-02",
+  "plant_type": "lettuce",
+  "plc_ip": "192.168.6.11",
+  "scada_ip": "192.168.6.20",
+  "setpoints": {
+    "light": {
+      "photoperiod_hours": 14,
+      "dark_hours": 10,
+      "dli_target_mol_m2_day": 17,
+      "lamp_on_level_pct": 80
+    },
+    "heat": {
+      "day_temp_c": 19.0,
+      "night_temp_c": 15.0,
+      "max_temp_c": 25.0,
+      "min_temp_c": 10.0
+    },
+    "water": {
+      "soil_moisture_pct_min": 70,
+      "soil_moisture_pct_target": 75,
+      "watering_times_per_day": 4,
+      "ec_ms_cm": 1.8
+    }
+  },
+  "logging": {
+    "syslog_host": "192.168.6.40",
+    "syslog_port": 514
+  }
+}

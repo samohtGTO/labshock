@@ -4,6 +4,12 @@ networks:
   portal_network:
     driver: bridge
 
+  ot_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.6.0/24
+
 services:
   portal:
     image: zakharbz/labshock-portal:latest
@@ -16,11 +22,60 @@ services:
       - portal_network
 
   launcher:
-      image: zakharbz/labshock-launcher:latest
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock:ro
-        - ./docker-compose.yml:/data/docker-compose.yml:ro
-      command: ["tail", "-f", "/dev/null"]
+    image: zakharbz/labshock-launcher:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./docker-compose.yml:/data/docker-compose.yml:ro
+    command: ["tail", "-f", "/dev/null"]
+
+  plc-plot-01:
+    image: zakharbz/labshock-plc:v1.1.1
+    container_name: kas-plc-plot-01
+    hostname: kas-plc-plot-01
+    networks:
+      ot_network:
+        ipv4_address: 192.168.6.10
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./greenhouse/plots/plot-01/setpoints.json:/workdir/setpoints.json:ro
+
+  plc-plot-02:
+    image: zakharbz/labshock-plc:v1.1.1
+    container_name: kas-plc-plot-02
+    hostname: kas-plc-plot-02
+    networks:
+      ot_network:
+        ipv4_address: 192.168.6.11
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./greenhouse/plots/plot-02/setpoints.json:/workdir/setpoints.json:ro
+
+  scada:
+    image: zakharbz/labshock-scada:v1.1.0
+    container_name: kas-scada
+    hostname: kas-scada
+    networks:
+      ot_network:
+        ipv4_address: 192.168.6.20
+    ports:
+      - "1881:1881"
+    dns:
+      - 127.0.0.11
+
+  collector:
+    image: zakharbz/labshock-collector:v2.0.1
+    container_name: kas-collector
+    hostname: kas-collector
+    networks:
+      ot_network:
+        ipv4_address: 192.168.6.40
+    ports:
+      - "2443:2443"
+    volumes:
+      - ./greenhouse/collector/config.json:/app/config/config.json:ro
+      - ./greenhouse/collector/sources.json:/app/config/sources.json:ro
 
 volumes:
   portal-data:
