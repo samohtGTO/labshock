@@ -14,6 +14,32 @@ OT-omgeving voor de kas-scenario binnen Labshock: één kas met twee plotten, el
 
 Netwerk: `ot_network` (192.168.6.0/24).
 
+## Internet en routing
+
+Oilsprings gebruikt losse subnetten (L2/L3) met een router-container en entrypoints die per container routes zetten (`ip route add 192.168.3.0/24 via 192.168.2.2`), met `ip route del default` als knop om internet te blokkeren.
+
+Voor onze kas is dat niet nodig: alles zit in één flat netwerk, dus SCADA kan de PLC's rechtstreeks bereiken zonder router of statische routes. Internet blokkeren doen we met Docker's ingebouwde netwerkoptie: `ot_network` is `internal: true` in docker-compose.yml, dus geen enkele OT-container (PLC's, SCADA, collector) kan naar het internet, zonder entrypoint-aanpassingen of NET_ADMIN-cap.
+
+De portal blijft op de gewone `portal_network` (met internet).
+
+Wil je later een externe Wazuh-manager koppelen, geef dan alleen de `collector` een extra, niet-intern netwerk in docker-compose.yml:
+
+```yaml
+  wazuh_bridge:
+    driver: bridge
+```
+
+```yaml
+  collector:
+    networks:
+      ot_network:
+        ipv4_address: 192.168.6.40
+      wazuh_bridge:
+        ipv4_address: 172.30.0.40
+```
+
+en zet het manager-IP in `greenhouse/collector/config.json`. De PLC's en SCADA blijven geïsoleerd; alleen de collector krijgt een deur naar buiten.
+
 ## Setpoints per plot
 
 - `plots/plot-01/setpoints.json` - tomaat: 16u licht, dag 21C / nacht 18C, bodemvocht 60-65%, 3x water per dag
