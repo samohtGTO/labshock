@@ -39,6 +39,9 @@ services:
       - "8080:8080"
     volumes:
       - ./greenhouse/plots/plot-01/setpoints.json:/workdir/setpoints.json:ro
+      - ./greenhouse/plots/plot-01/appdata/st_files:/workdir/webserver/st_files
+      - ./greenhouse/plots/plot-01/appdata/openplc.db:/workdir/webserver/openplc.db
+      - ./greenhouse/plots/plot-01/appdata/active_program:/workdir/webserver/active_program
 
   plc-plot-02:
     image: zakharbz/labshock-plc:v1.1.1
@@ -51,6 +54,9 @@ services:
       - "8081:8080"
     volumes:
       - ./greenhouse/plots/plot-02/setpoints.json:/workdir/setpoints.json:ro
+      - ./greenhouse/plots/plot-02/appdata/st_files:/workdir/webserver/st_files
+      - ./greenhouse/plots/plot-02/appdata/openplc.db:/workdir/webserver/openplc.db
+      - ./greenhouse/plots/plot-02/appdata/active_program:/workdir/webserver/active_program
 
   scada:
     image: zakharbz/labshock-scada:v1.1.0

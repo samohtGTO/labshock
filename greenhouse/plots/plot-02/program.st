@@ -65,3 +65,11 @@ PROGRAM lettuce_plot_02
   temp_sp_raw := 190;
   moisture_sp_raw := 70;
 END_PROGRAM
+
+CONFIGURATION Config0
+
+  RESOURCE Res0 ON PLC
+    TASK task0(INTERVAL := T#20ms,PRIORITY := 0);
+    PROGRAM instance0 WITH task0 : lettuce_plot_02;
+  END_RESOURCE
+END_CONFIGURATION

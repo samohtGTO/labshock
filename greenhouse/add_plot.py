@@ -92,18 +92,22 @@ def main():
         f'    ports:\n'
         f'      - "{host_port}:8080"\n'
         f'    volumes:\n'
-        f'      - ./greenhouse/plots/{plot_id}/setpoints.json:/workdir/setpoints.json:ro\n\n'
+        f'      - ./greenhouse/plots/{plot_id}/setpoints.json:/workdir/setpoints.json:ro\n'
+        f'      - ./greenhouse/plots/{plot_id}/appdata/st_files:/workdir/webserver/st_files\n'
+        f'      - ./greenhouse/plots/{plot_id}/appdata/openplc.db:/workdir/webserver/openplc.db\n'
+        f'      - ./greenhouse/plots/{plot_id}/appdata/active_program:/workdir/webserver/active_program\n\n'
     )
     compose = compose[:m.start()] + block + compose[m.start():]
     with open(COMPOSE, "w") as f:
         f.write(compose)
 
     subprocess.run([sys.executable, os.path.join(ROOT, "scada", "generate.py")], check=True)
+    subprocess.run([sys.executable, os.path.join(ROOT, "plc-setup.py")], check=True)
 
     print(f"Plot toegevoegd: {plot_id} ({plant}) op {ip}, SCADA: http://localhost:{host_port}")
     print("Volgende stappen:")
     print(f"  - docker compose up -d")
-    print(f"  - upload en start greenhouse/plots/{plot_id}/program.st in de PLC web UI: http://localhost:{host_port}")
+    print("  - het PLC-programma wordt bij het opstarten automatisch geladen en gestart (Modbus 502)")
     print("  - de SCADA-device en -view voor deze plot zijn al gegenereerd")
 
 

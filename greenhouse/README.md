@@ -67,13 +67,19 @@ Kant-en-klare OpenPLC-programma's liggen per plot klaar (`plots/plot-01/program.
 
 ## PLC activeren (Modbus op 502)
 
-Krijgt de SCADA `ECONNREFUSED <plc-ip>:502`? Dan stuurt de PLC-runtime nog geen Modbus, meestal omdat er nog geen programma draait. Loop dit af:
+De PLC-programma's laden automatisch bij het opstarten van de containers. Dit werkt net als bij het oilsprings-voorbeeld: `greenhouse/plc-setup.py` schrijft per plot een `appdata/` mappoatrioom (st_files/, openplc.db, active_program) dat via docker-compose wordt gemount in de PLC-container (workdir/webserver). `Start_run_mode=true` in openplc.db zorgt dat het programma meteen start en Modbus op 502 luistert; events gaan via syslog naar de collector.
 
-1. Upload het programma in de PLC web UI (plot 1: `http://localhost:8080`, plot 2: `http://localhost:8081`, login `openplc` / `openplc`):
-   - Slot 0 -> `Upload Program` -> kies `greenhouse/plots/plot-01/program.st`
-   - `Compile program`, daarna `Start PLC`
-   - idem voor plot 2 met `plot-02/program.st`
-2. In trial-modus start Labshock vertraagd (5 min initialisatietijd) - wacht en controleer `docker compose logs plc-plot-01`.
+Na wijzigingen in program.st:
+
+```bash
+python3 greenhouse/plc-setup.py
+docker compose restart plc-plot-01 plc-plot-02
+```
+
+Krijgt de SCADA toch `ECONNREFUSED <plc-ip>:502`?
+
+1. Wacht even - Labshock in trial-modus heeft een initialisatietijd (5 min).
+2. Controleer de PLC-runtime logs: `docker compose logs plc-plot-01`.
 3. Test of Modbus open staat (vanaf de host, na `docker compose up`):
 
 ```bash
